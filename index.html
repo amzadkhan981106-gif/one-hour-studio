@@ -1,1 +1,65 @@
-ONE HOUR STUDIO - AI Video Maker Website
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ONE HOUR STUDIO</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#090d19;color:white;font-family:Arial,sans-serif}
+header{padding:20px;background:#11182a;text-align:center;border-bottom:1px solid #29334d}
+header h1{color:#8b7cff;margin:0}
+main{max-width:700px;margin:30px auto;padding:20px}
+.card{background:#141d31;padding:22px;border-radius:16px}
+h2{margin-top:0}
+textarea,select,input{width:100%;padding:13px;margin:10px 0 18px;border-radius:9px;border:1px solid #394663;background:#090f20;color:white;font-size:16px}
+textarea{height:180px;resize:vertical}
+button{width:100%;padding:15px;background:#7665ff;color:white;border:0;border-radius:10px;font-size:17px;font-weight:bold}
+button:active{opacity:.8}
+#result{margin-top:20px;color:#bdb5ff;white-space:pre-wrap}
+footer{text-align:center;color:#8791a8;padding:25px}
+</style>
+</head>
+<body>
+<header>
+<h1>🎬 ONE HOUR STUDIO</h1>
+<p>AI Long Video Maker</p>
+</header>
+<main>
+<div class="card">
+<h2>अपना वीडियो बनाएं</h2>
+<label>वीडियो की भाषा</label>
+<select id="language">
+<option>हिंदी</option>
+<option>English</option>
+</select>
+<label>वीडियो की अवधि</label>
+<select id="duration">
+<option>1 मिनट</option>
+<option>5 मिनट</option>
+<option>10 मिनट</option>
+<option>30 मिनट</option>
+<option>60 मिनट</option>
+</select>
+<label>अपनी कहानी या स्क्रिप्ट लिखें</label>
+<textarea id="script" placeholder="यहाँ अपनी कहानी लिखें..."></textarea>
+<button onclick="createPlan()">वीडियो प्लान बनाएं</button>
+<div id="result"></div>
+</div>
+</main>
+<footer>ONE HOUR STUDIO © 2026</footer>
+<script>
+function createPlan(){
+let script=document.getElementById("script").value.trim();
+let duration=document.getElementById("duration").value;
+let language=document.getElementById("language").value;
+let result=document.getElementById("result");
+if(!script){
+result.textContent="कृपया पहले अपनी कहानी लिखें।";
+return;
+}
+result.textContent="आपका वीडियो प्लान तैयार है!\n\nभाषा: "+language+"\nअवधि: "+duration+"\n\nस्क्रिप्ट:\n"+script+"\n\nअगले चरण में AI वीडियो जनरेशन जोड़ा जाएगा।";
+}
+</script>
+</body>
+</html>

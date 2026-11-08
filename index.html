@@ -7,17 +7,25 @@
 <style>
 *{box-sizing:border-box}
 body{margin:0;background:#090d19;color:white;font-family:Arial,sans-serif}
-header{padding:20px;background:#11182a;text-align:center;border-bottom:1px solid #29334d}
-header h1{color:#8b7cff;margin:0}
-main{max-width:700px;margin:30px auto;padding:20px}
-.card{background:#141d31;padding:22px;border-radius:16px}
-h2{margin-top:0}
-textarea,select,input{width:100%;padding:13px;margin:10px 0 18px;border-radius:9px;border:1px solid #394663;background:#090f20;color:white;font-size:16px}
-textarea{height:180px;resize:vertical}
-button{width:100%;padding:15px;background:#7665ff;color:white;border:0;border-radius:10px;font-size:17px;font-weight:bold}
-button:active{opacity:.8}
-#result{margin-top:20px;color:#bdb5ff;white-space:pre-wrap}
-footer{text-align:center;color:#8791a8;padding:25px}
+header{background:#11182a;padding:22px;text-align:center}
+header h1{color:#9585ff;margin:0}
+main{max-width:750px;margin:25px auto;padding:15px}
+.card{background:#141d31;padding:20px;border-radius:16px}
+h2{color:#b9adff}
+label{display:block;margin-top:18px;font-weight:bold}
+textarea,input,select{width:100%;padding:13px;margin-top:9px;border:1px solid #394663;border-radius:9px;background:#090f20;color:white;font-size:16px}
+textarea{height:150px}
+.styles{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px}
+.style{background:#202c46;padding:14px 5px;text-align:center;border:2px solid transparent;border-radius:10px;cursor:pointer}
+.style input{width:auto}
+.style:has(input:checked){border-color:#9585ff;background:#30265a}
+.upload{border:2px dashed #8174d9;padding:25px;text-align:center;border-radius:12px;margin-top:10px;cursor:pointer}
+.upload input{display:none}
+#preview{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+#preview img{width:90px;height:90px;object-fit:cover;border-radius:8px}
+button{width:100%;padding:15px;margin-top:22px;background:#7865ff;color:white;border:0;border-radius:10px;font-size:17px;font-weight:bold}
+#result{white-space:pre-wrap;margin-top:20px;color:#c6bdff}
+footer{text-align:center;padding:25px;color:#8992a8}
 </style>
 </head>
 <body>
@@ -28,37 +36,98 @@ footer{text-align:center;color:#8791a8;padding:25px}
 <main>
 <div class="card">
 <h2>अपना वीडियो बनाएं</h2>
+
 <label>वीडियो की भाषा</label>
 <select id="language">
-<option>हिंदी</option>
-<option>English</option>
+<option value="Hindi">हिंदी</option>
+<option value="English">English</option>
 </select>
-<label>वीडियो की अवधि</label>
+
+<label>वीडियो की अवधि चुनें</label>
 <select id="duration">
-<option>1 मिनट</option>
-<option>5 मिनट</option>
-<option>10 मिनट</option>
-<option>30 मिनट</option>
-<option>60 मिनट</option>
+<option value="1">1 मिनट</option>
+<option value="5">5 मिनट</option>
+<option value="10">10 मिनट</option>
+<option value="15">15 मिनट</option>
+<option value="20">20 मिनट</option>
+<option value="30">30 मिनट</option>
+<option value="45">45 मिनट</option>
+<option value="60">60 मिनट</option>
 </select>
+
+<label>या अपनी अवधि खुद लिखें (मिनट)</label>
+<input type="number" id="customDuration" min="1" max="60" placeholder="जैसे 7, 12, 25 या 50">
+
+<label>वीडियो का स्टाइल चुनें</label>
+<div class="styles">
+<label class="style">
+<input type="radio" name="style" value="2D Cartoon" checked>
+<br>🎨<br>2D Cartoon
+</label>
+<label class="style">
+<input type="radio" name="style" value="3D Animation">
+<br>🧊<br>3D Animation
+</label>
+<label class="style">
+<input type="radio" name="style" value="Realistic">
+<br>🎥<br>Realistic
+</label>
+</div>
+
+<label>अपनी तस्वीरें अपलोड करें</label>
+<label class="upload">
+<input type="file" id="photos" accept="image/*" multiple onchange="showPhotos()">
+<span style="font-size:35px">＋</span>
+<br>Gallery से तस्वीरें चुनें
+</label>
+<div id="preview"></div>
+
 <label>अपनी कहानी या स्क्रिप्ट लिखें</label>
-<textarea id="script" placeholder="यहाँ अपनी कहानी लिखें..."></textarea>
+<textarea id="script" placeholder="यहाँ अपनी पूरी कहानी लिखें..."></textarea>
+
 <button onclick="createPlan()">वीडियो प्लान बनाएं</button>
 <div id="result"></div>
 </div>
 </main>
 <footer>ONE HOUR STUDIO © 2026</footer>
+
 <script>
+function showPhotos(){
+const files=document.getElementById("photos").files;
+const preview=document.getElementById("preview");
+preview.innerHTML="";
+Array.from(files).forEach(file=>{
+const img=document.createElement("img");
+img.src=URL.createObjectURL(file);
+preview.appendChild(img);
+});
+}
+
 function createPlan(){
-let script=document.getElementById("script").value.trim();
-let duration=document.getElementById("duration").value;
-let language=document.getElementById("language").value;
-let result=document.getElementById("result");
+const script=document.getElementById("script").value.trim();
+const language=document.getElementById("language").value;
+const selected=document.querySelector('input[name="style"]:checked');
+const custom=document.getElementById("customDuration").value;
+const duration=custom || document.getElementById("duration").value;
+const photos=document.getElementById("photos").files;
+const result=document.getElementById("result");
+
 if(!script){
-result.textContent="कृपया पहले अपनी कहानी लिखें।";
+result.textContent="पहले अपनी कहानी लिखें।";
 return;
 }
-result.textContent="आपका वीडियो प्लान तैयार है!\n\nभाषा: "+language+"\nअवधि: "+duration+"\n\nस्क्रिप्ट:\n"+script+"\n\nअगले चरण में AI वीडियो जनरेशन जोड़ा जाएगा।";
+if(!duration || Number(duration)<1 || Number(duration)>60){
+result.textContent="वीडियो की अवधि 1 से 60 मिनट के बीच लिखें।";
+return;
+}
+result.textContent=
+"आपका वीडियो प्लान तैयार है!\n\n"+
+"भाषा: "+language+
+"\nअवधि: "+duration+" मिनट"+
+"\nस्टाइल: "+selected.value+
+"\nअपलोड की गई तस्वीरें: "+photos.length+
+"\n\nस्क्रिप्ट:\n"+script+
+"\n\nअगले चरण में असली AI वीडियो जनरेशन और MP4 एक्सपोर्ट जोड़ा जाएगा।";
 }
 </script>
 </body>

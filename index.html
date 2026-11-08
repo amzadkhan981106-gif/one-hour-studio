@@ -120,15 +120,35 @@ if(!duration || Number(duration)<1 || Number(duration)>60){
 result.textContent="वीडियो की अवधि 1 से 60 मिनट के बीच लिखें।";
 return;
 }
-result.textContent=
-"आपका वीडियो प्लान तैयार है!\n\n"+
-"भाषा: "+language+
-"\nअवधि: "+duration+" मिनट"+
-"\nस्टाइल: "+selected.value+
-"\nअपलोड की गई तस्वीरें: "+photos.length+
-"\n\nस्क्रिप्ट:\n"+script+
-"\n\nअगले चरण में असली AI वीडियो जनरेशन और MP4 एक्सपोर्ट जोड़ा जाएगा।";
-}
+
+result.textContent="सर्वर से संपर्क हो रहा है...";
+
+fetch("https://one-hour-studio-backend.onrender.com/api/generate-video",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+script:script,
+story:script,
+language:language,
+duration:Number(duration),
+style:selected ? selected.value : "2D Cartoon",
+backgroundMusic:false,
+photosCount:photos.length
+})
+})
+.then(async response=>{
+const data=await response.json();
+if(!response.ok) throw new Error(data.message || data.error || "AI वीडियो सेवा अभी तैयार नहीं है।");
+return data;
+})
+.then(data=>{
+result.textContent=data.message || "अनुरोध सफलतापूर्वक भेजा गया।";
+})
+.catch(error=>{
+result.textContent="सर्वर का जवाब: "+error.message;
+});
+  }
+  
 </script>
 </body>
 </html>
